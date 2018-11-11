@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "accelerator.h": "c",
+        "stm8s.h": "c",
+        "stm8s_it.h": "c",
+        "mpu6050.h": "c",
+        "iic.h": "c",
+        "stdint.h": "c",
+        "key.h": "c",
+        "controller.h": "c"
+    },
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2
+}

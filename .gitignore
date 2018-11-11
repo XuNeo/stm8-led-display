@@ -1,0 +1,17 @@
+Debug/
+settings/
+*.dep
+*.exe
+STM8S103/
+*.csv
+*.txt
+*.ini
+*.xlsx
+*.bmp
+*.txt
+*.ini
+*.scvd
+*.o
+*.ewt
+*.log
+	
