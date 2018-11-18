@@ -10641,6 +10641,15 @@
     <group>
         <name>User</name>
         <file>
+            <name>$PROJ_DIR$\..\src\CBuff.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\src\comm.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\src\ezled.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\src\led.c</name>
         </file>
         <file>

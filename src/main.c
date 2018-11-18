@@ -28,7 +28,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s.h"
-#include "led.h"
+#include "ezled.h"
+#include "comm.h"
+
 /* Private defines -----------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -38,11 +40,13 @@ void main(void)
   /* Initialization of the clock */
   /* Clock divider to HSI/1 */
   CLK_HSIPrescalerConfig(CLK_PRESCALER_HSIDIV1);
+  comm_init();
+  ezled_init(&ezled);
   /* Enable general interrupts */  
   enableInterrupts();
-  led_init();
   while (1)
   {
+    comm_service();
   }
   
 }

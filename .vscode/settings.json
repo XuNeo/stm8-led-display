@@ -7,7 +7,9 @@
         "iic.h": "c",
         "stdint.h": "c",
         "key.h": "c",
-        "controller.h": "c"
+        "controller.h": "c",
+        "led.h": "c",
+        "ezled.h": "c"
     },
     "editor.insertSpaces": true,
     "editor.tabSize": 2
