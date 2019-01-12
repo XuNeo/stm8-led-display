@@ -18,7 +18,7 @@ void uart_char(char c)
   if(bUARTInited == 0)
   {
     bUARTInited = 1;
-    usart_init();
+    usart_init(230400);
   }
   UART1_SendData8(c);
   /* Loop until the end of transmission */

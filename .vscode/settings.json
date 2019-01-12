@@ -9,7 +9,8 @@
         "key.h": "c",
         "controller.h": "c",
         "led.h": "c",
-        "ezled.h": "c"
+        "ezled.h": "c",
+        "serial_frame.h": "c"
     },
     "editor.insertSpaces": true,
     "editor.tabSize": 2
