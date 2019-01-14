@@ -2,20 +2,21 @@
  * Serial frame uses the similar method in HDLC protocol.
  * high level data link control protocol
  * 0x7d as frame start and end marker
- * 0x7e is the escape uint8_tacter, both data 0x7d and 0x7e should be
+ * 0x7e is the escape character, both data 0x7d and 0x7e should be
  * escaped with 0x7e + data^0x20.
  * So, data 0x7e will be encoded to 0x7e+0x5e; data 0x7d will be 
  * encoded to 0x7e+0x5d
  * */
 #include "serial_frame.h"
 
-void sframe_init(sframe_def *psframe, uint8_t *pbuff, uint32_t buffer_size){
+void sframe_init(sframe_def *psframe, uint8_t *pbuff, uint32_t buffer_size, sframe_callback callback){
   if(psframe == 0) return;
   psframe->pbuff = pbuff;
   psframe->max_frame_len = buffer_size;
   psframe->state = sframe_state_start;
   psframe->frame_len = 0;
   psframe->windex = 0;
+  psframe->callback = callback;
 }
 
 int32_t sframe_decode(sframe_def *psframe, uint8_t *pinput, uint32_t len){
@@ -50,6 +51,7 @@ int32_t sframe_decode(sframe_def *psframe, uint8_t *pinput, uint32_t len){
           if(psframe->callback)
             psframe->callback(psframe->pbuff, psframe->frame_len);
           psframe->state = sframe_state_start;
+          psframe->windex = 0;
         }
         break;
     }

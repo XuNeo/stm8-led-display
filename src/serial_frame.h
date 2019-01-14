@@ -15,13 +15,18 @@ typedef enum{
   sframe_state_end,
 }sframe_state_def;
 
+typedef void (*sframe_callback)(uint8_t*, uint32_t);
+
 typedef struct _sframe{
   uint8_t *pbuff;
   uint32_t max_frame_len;
   uint32_t frame_len;
   uint32_t windex;
   sframe_state_def state;
-  void (*callback)(uint8_t *pframe, uint32_t len);
+  sframe_callback callback;
 }sframe_def;
+
+void sframe_init(sframe_def *psframe, uint8_t *pbuff, uint32_t buffer_size, sframe_callback callback);
+int32_t sframe_decode(sframe_def *psframe, uint8_t *pinput, uint32_t len);
 
 #endif

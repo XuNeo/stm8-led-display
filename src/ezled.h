@@ -94,7 +94,8 @@ void ezled_init(ezled_def* pezled);
 void ezled_print(ezled_def* pezled, char *pstr);
 void ezled_set_blink(ezled_def *pezled, uint8_t pos_set);
 void ezled_set_blink_speed(ezled_def *pezled, ledblink_speed_def speed);
-void ezled_set_constrast(ezled_def *pezled, ledcont_def contrast);
+void ezled_set_contrast(ezled_def *pezled, ledcont_def contrast);
 void ezled_timer_isr(ezled_def *pezled);
+void ez_led_poll(ezled_def* pezled);
 
 #endif

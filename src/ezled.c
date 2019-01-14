@@ -45,13 +45,13 @@ void ezled_set_blink_speed(ezled_def *pezled, ledblink_speed_def speed)
   if(pezled == 0) return;
   pezled->blink_speed = speed;
 }
-void ezled_set_constrast(ezled_def *pezled, ledcont_def contrast)
+void ezled_set_contrast(ezled_def *pezled, ledcont_def contrast)
 {
   if(pezled == 0) return;
   pezled->led_contrast = contrast;
 }
 
-void ezled_timer_isr(ezled_def *pezled)
+void _ezled_timer_isr(ezled_def *pezled)
 {
   static uint8_t blink_div_count;
   if(pezled->private.curr_pos < pezled->ezledif.led_pos_count)
@@ -86,6 +86,17 @@ void ezled_timer_isr(ezled_def *pezled)
   }
 }
 
+volatile char flag_interrupt = 0;
+void ezled_timer_isr(ezled_def *pezled){
+  flag_interrupt = 1;
+}
+
+void ez_led_poll(ezled_def* pezled){
+  if(flag_interrupt){
+    flag_interrupt = 0;
+    _ezled_timer_isr(pezled);
+  }
+}
 void ezled_print(ezled_def* pezled, char *pstr)
 {
 //pled_seg_buff

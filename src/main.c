@@ -29,7 +29,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s.h"
 #include "ezled.h"
-#include "comm.h"
+#include "commands.h"
 
 /* Private defines -----------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
@@ -40,13 +40,13 @@ void main(void)
   /* Initialization of the clock */
   /* Clock divider to HSI/1 */
   CLK_HSIPrescalerConfig(CLK_PRESCALER_HSIDIV1);
-  comm_init();
   ezled_init(&ezled);
+  commands_init();
   /* Enable general interrupts */  
   enableInterrupts();
   while (1)
   {
-    comm_service();
+    ez_led_poll(&ezled);
   }
   
 }
@@ -62,6 +62,10 @@ void main(void)
   */
 void assert_failed(u8* file, u32 line)
 { 
+  volatile static u8 *pfile;
+  volatile static u32 line_;
+  line_ = line;
+  pfile = file;
   /* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
 

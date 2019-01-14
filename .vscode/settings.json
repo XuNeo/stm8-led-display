@@ -10,7 +10,8 @@
         "controller.h": "c",
         "led.h": "c",
         "ezled.h": "c",
-        "serial_frame.h": "c"
+        "serial_frame.h": "c",
+        "commands.h": "c"
     },
     "editor.insertSpaces": true,
     "editor.tabSize": 2

@@ -909,10 +909,7 @@
     <group>
         <name>User</name>
         <file>
-            <name>$PROJ_DIR$\..\src\CBuff.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\src\comm.c</name>
+            <name>$PROJ_DIR$\..\src\commands.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\ezled.c</name>
