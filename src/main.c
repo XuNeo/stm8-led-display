@@ -35,12 +35,45 @@
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
+ezled_def ezled;  //ezled instance.
+extern ezledif_def ezledif; //the led hardware defined in led
+
+void command_set_blink(uint8_t *ppara, uint8_t len){
+  if(ppara == 0) return;
+  if(len != 1) return;
+  ezled_set_blink(&ezled, *ppara);
+}
+void command_set_blink_speed(uint8_t *ppara, uint8_t len){
+  if(ppara == 0) return;
+  if(len != 1) return;
+  ezled_set_blink_speed(&ezled, (led_speed_def)*ppara);
+}
+void command_set_scroll_speed(uint8_t *ppara, uint8_t len){
+  if(ppara == 0) return;
+  if(len != 1) return;
+  ezled_set_scroll_speed(&ezled, (led_speed_def)*ppara);
+}
+
+void command_set_contrast(uint8_t *ppara, uint8_t len){
+  if(ppara == 0) return;
+  if(len != 1) return;
+  ezled_set_contrast(&ezled, (ledcont_def)*ppara);
+}
+
+void command_print(uint8_t *ppara, uint8_t len){
+  //case string to len
+  char *pstr = (char*)ppara;
+  if(ppara == 0) return;
+  ppara[len] = '\0';
+  ezled_print(&ezled, pstr);
+}
+
 void main(void)
 {
   /* Initialization of the clock */
   /* Clock divider to HSI/1 */
   CLK_HSIPrescalerConfig(CLK_PRESCALER_HSIDIV1);
-  ezled_init(&ezled);
+  ezled_init(&ezled, &ezledif);
   commands_init();
   /* Enable general interrupts */  
   enableInterrupts();

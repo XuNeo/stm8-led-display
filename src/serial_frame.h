@@ -3,7 +3,7 @@
 #include "stm8s.h"
 
 #define SFRAME_START  0x7d
-#define SFRAME_STOP   0x7d
+#define SFRAME_STOP   0x7c  //i don't want to use same mark as start and stop.
 #define SFRAME_ESCAPE 0x7e
 
 typedef enum{

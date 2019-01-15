@@ -1,7 +1,7 @@
 /**
  * Serial frame uses the similar method in HDLC protocol.
  * high level data link control protocol
- * 0x7d as frame start and end marker
+ * 0x7d as frame start and 0x7c as end marker(not same as HDLC)
  * 0x7e is the escape character, both data 0x7d and 0x7e should be
  * escaped with 0x7e + data^0x20.
  * So, data 0x7e will be encoded to 0x7e+0x5e; data 0x7d will be 

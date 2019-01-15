@@ -11,8 +11,7 @@
 #define LEDSEGG     0x40
 #define LEDSEGDP    0x80
 
-typedef enum
-{
+typedef enum{
   LEDPOS1 = 0x01,
   LEDPOS2 = 0x02,
   LEDPOS3 = 0x04,
@@ -21,12 +20,11 @@ typedef enum
   LEDPOS6 = 0x20,
   LEDPOS7 = 0x40,
   LEDPOS8 = 0x80,
-  LEDPOSNON,
+  LEDPOSNON = 0,
 }ledpos_def;
 
-typedef enum
-{
-  LEDCONT_LEVL0 = 0,
+typedef enum{
+  LEDCONT_LEVL0 = 0,  //lowest contrast
   LEDCONT_LEVL1,
   LEDCONT_LEVL2,
   LEDCONT_LEVL3,
@@ -35,67 +33,64 @@ typedef enum
   LEDCONT_LEVL6,
   LEDCONT_LEVL7,
   LEDCONT_LEVL8,
-  LEDCONT_LEVL9,
+  LEDCONT_LEVL9,      //highest contrast
 }ledcont_def; //led contrast level
 
-typedef enum
-{
-  LEDBLINK_SPEED0 = 0,
-  LEDBLINK_SPEED1,
-  LEDBLINK_SPEED2,
-  LEDBLINK_SPEED3,
-  LEDBLINK_SPEED4,
-  LEDBLINK_SPEED5,
-  LEDBLINK_SPEED6,
-  LEDBLINK_SPEED7,
-  LEDBLINK_SPEED8,
-  LEDBLINK_SPEED9,
-}ledblink_speed_def;
+typedef enum{
+  LED_SPEED0 = 0,  //lowest speed
+  LED_SPEED1,
+  LED_SPEED2,
+  LED_SPEED3,
+  LED_SPEED4,
+  LED_SPEED5,
+  LED_SPEED6,
+  LED_SPEED7,
+  LED_SPEED8,
+  LED_SPEED9,      //highest speed
+}led_speed_def;
 
 /* ezLedLib interface definination*/
 
-typedef struct
-{
-  uint32_t  led_pos_count;                /* How many numbers can display on led screen */
-  
-  void      (*led_bsp_init)       (void); /* Init LED related hardwares */
-  void      (*led_light_up)       (uint8_t position, uint8_t seg_set);
-  uint32_t  (*get_led_segs)       (void); /* Return how many segs are connected to this LED interface */
-  void      (*set_timer_callback) (void *pfunc);  /* Call this function in timer isr. */
+typedef struct _ezled_if{
+  struct _ezled * phook;                /* The hook to ezled instance which is bounded to this hardware. */
+  uint8_t         count;                /* How many numbers can display on led screen */
+  uint8_t *       pbuff;                /* The raw data to display on LED directly */
+  uint8_t         szbuff;               /* Size of provided buffer. */
+  void            (*init)   (void);     /* Init LED related hardwares */
+  void            (*light)  (uint8_t position, uint8_t seg_set);
 }ezledif_def;
 
-typedef struct
-{
+typedef struct{
   uint8_t c;
   uint8_t font;
 }led_font_def;
 
-typedef struct
-{
-  uint8_t *const pled_seg_buff;       /* The raw data to display on LED directly */
-  ezledif_def ezledif;                /* The hardware interface */
-  uint8_t blink_pos_set;  /* Private variables */
-  ledblink_speed_def blink_speed;
-  ledcont_def led_contrast;
-  struct
-  {
+typedef struct _ezled{
+  uint8_t             flag_interrupt; /**< flag to indicate the timer interrupt has occured. */
+  ezledif_def         *ezledif;       /* The hardware interface */
+  uint8_t             charlen;        /* Character length not including '.' */
+  uint8_t             blink_pos_set;  /* Private variables */
+  led_speed_def       blink_speed;    /* Blink speed. */
+  led_speed_def       scroll_speed;
+  ledcont_def         led_contrast;
+  struct{ //private variables
     uint8_t curr_pos;
-    uint8_t disp_en;    //used for blink. 
-    uint8_t blink_count;  
-    uint8_t led_font_count;       /* How many characters are in table. */
-    const led_font_def *pled_font;      /* The font used to translate string to raw seg data.  */
-    const uint8_t *pcontrast_table;
+    uint8_t disp_en;        //used for blink. 
+    uint8_t count_pre_div;  //the counter for pre-divider.
+    uint8_t count_blink_div;    
+    uint8_t count_scroll_div;    
+    uint8_t scroll_en;      //enable scroll function(when content to display exceed led count.).
+    uint8_t scroll_pos;     //curr start position to disp buffer(ezledif.pbuff).
   }private;
 }ezled_def;
 
-extern ezled_def ezled;
-
-void ezled_init(ezled_def* pezled);
+int8_t ezled_init(ezled_def* pezled, ezledif_def*phardware);
+void ez_led_poll(ezled_def* pezled);
 void ezled_print(ezled_def* pezled, char *pstr);
 void ezled_set_blink(ezled_def *pezled, uint8_t pos_set);
-void ezled_set_blink_speed(ezled_def *pezled, ledblink_speed_def speed);
+void ezled_set_blink_speed(ezled_def *pezled, led_speed_def speed);
+void ezled_set_scroll_speed(ezled_def *pezled, led_speed_def speed);
 void ezled_set_contrast(ezled_def *pezled, ledcont_def contrast);
 void ezled_timer_isr(ezled_def *pezled);
-void ez_led_poll(ezled_def* pezled);
 
 #endif

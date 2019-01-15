@@ -11,7 +11,8 @@
         "led.h": "c",
         "ezled.h": "c",
         "serial_frame.h": "c",
-        "commands.h": "c"
+        "commands.h": "c",
+        "fifo.h": "c"
     },
     "editor.insertSpaces": true,
     "editor.tabSize": 2

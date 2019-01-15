@@ -19,10 +19,13 @@
 
 #define CMD_SETBLINK        1       //start which led(s) to blink
 #define CMD_SETBLINK_SPEED  2       //set the blink speed
-#define CMD_SETCONTRAST     3       //set the blink speed
-#define CMD_PRINT           4       //set the blink speed
+#define CMD_SETCONTRAST     3       //set the contrast level
+#define CMD_PRINT           4       //print string to led.
+#define CMD_SETSCROLL_SPEED 5       //set scroll speed
 
 void command_set_blink(uint8_t *ppara, uint8_t len);
+void command_set_blink_speed(uint8_t *ppara, uint8_t len);
+void command_set_scroll_speed(uint8_t *ppara, uint8_t len);
 void command_print(uint8_t *ppara, uint8_t len);
 void command_set_contrast(uint8_t *ppara, uint8_t len);
 
@@ -43,6 +46,16 @@ cmd_table_def cmd_table[]={
     .pdesc = "",
   },
   {
+    .command = CMD_SETBLINK_SPEED,
+    .phandler = command_set_blink_speed,
+    .pdesc = "",
+  },
+  {
+    .command = CMD_SETSCROLL_SPEED,
+    .phandler = command_set_scroll_speed,
+    .pdesc = "",
+  },
+  {
     .command = CMD_SETCONTRAST,
     .phandler = command_set_contrast,
     .pdesc = "",
@@ -55,7 +68,6 @@ cmd_table_def cmd_table[]={
 };
 
 sframe_def sframe;
-
 static inline void command_parser(uint8_t *pframe, uint32_t len){
   uint8_t cmd_code, para_len;
   uint8_t i;
@@ -86,27 +98,4 @@ void commands_init(void){
   static uint8_t frame_buff[128];
   usart_init(9600, (void*)_usart_rx_callback);
   sframe_init(&sframe, frame_buff, 128, _sframe_callback);  //used to decode frame and store decoded frame to buffer.
-}
-
-void command_set_blink(uint8_t *ppara, uint8_t len){
-  if(ppara == 0) return;
-  if(len != 1) return;
-  ezled_set_blink(&ezled, *ppara);
-}
-
-void command_set_contrast(uint8_t *ppara, uint8_t len){
-  if(ppara == 0) return;
-  if(len != 1) return;
-  ezled_set_contrast(&ezled, (ledcont_def)*ppara);
-}
-
-void command_print(uint8_t *ppara, uint8_t len){
-  //case string to len
-  char *pstr = (char*)ppara;
-  uint8_t str_len = 0;
-  if(ppara == 0) return;
-  while(*ppara++) str_len++;
-  if(str_len > len)
-    ppara[len] = '\0'; //something is wrong.
-  ezled_print(&ezled, pstr);
 }
