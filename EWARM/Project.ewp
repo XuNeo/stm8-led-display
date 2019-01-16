@@ -918,7 +918,7 @@
             <name>$PROJ_DIR$\..\src\fifo.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\src\led.c</name>
+            <name>$PROJ_DIR$\..\src\led4.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\main.c</name>
