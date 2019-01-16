@@ -99,12 +99,12 @@ static void led_light_up(uint8_t position_set, uint8_t seg_set){
   }
 }
 
-static uint8_t _seg_buff[32];
+static uint8_t _seg_buff[64];
 ezledif_def ezledif={
   .phook = 0,
   .count = 5,
   .pbuff = _seg_buff,
-  .szbuff = 32,
+  .szbuff = 64,
   .init = led_bsp_init,
   .light = led_light_up,
 };

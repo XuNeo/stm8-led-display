@@ -915,6 +915,9 @@
             <name>$PROJ_DIR$\..\src\ezled.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\src\fifo.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\src\led.c</name>
         </file>
         <file>

@@ -79,6 +79,7 @@ void main(void)
   enableInterrupts();
   while (1)
   {
+    commands_poll();
     ez_led_poll(&ezled);
   }
   

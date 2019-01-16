@@ -8,5 +8,6 @@ typedef struct{
 }cmd_table_def;
 
 void commands_init(void);
+void commands_poll(void);
 
 #endif

@@ -1,5 +1,6 @@
 #include "commands.h"
 #include "serial_frame.h"
+#include "fifo.h"
 #include "usart.h"
 #include "ezled.h"
 /**
@@ -68,6 +69,7 @@ cmd_table_def cmd_table[]={
 };
 
 sframe_def sframe;
+fifo_def uart_fifo;
 static inline void command_parser(uint8_t *pframe, uint32_t len){
   uint8_t cmd_code, para_len;
   uint8_t i;
@@ -85,8 +87,9 @@ static inline void command_parser(uint8_t *pframe, uint32_t len){
   }
 }
 
+//add fifo support on usart receive side.
 static void _usart_rx_callback(uint8_t ch){
-  sframe_decode(&sframe, &ch, 1);
+  fifo_write1B(&uart_fifo, ch);
 }
 
 //the function will be called when a valid frame is decoded.
@@ -96,6 +99,15 @@ static void _sframe_callback(uint8_t* pbuff, uint32_t len){
 
 void commands_init(void){
   static uint8_t frame_buff[128];
-  usart_init(9600, (void*)_usart_rx_callback);
+  static uint8_t fifobuff[128];
+  fifo_init(&uart_fifo, fifobuff, 128);
+  usart_init(115200, (void*)_usart_rx_callback);
   sframe_init(&sframe, frame_buff, 128, _sframe_callback);  //used to decode frame and store decoded frame to buffer.
+}
+
+//poll this functio to process command received(frame received)
+void commands_poll(void){
+  uint8_t ch;
+  while(fifo_read1B(&uart_fifo, &ch) == fifo_err_ok)
+    sframe_decode(&sframe, &ch, 1);
 }

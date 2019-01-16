@@ -31,12 +31,11 @@ void uart_set_baudrate(uint32_t baudrate)
 
 void uart_rx_isr(void)
 {
-  volatile uint8_t c = (uint8_t)UART1->DR;
-  UART1_ClearFlag(UART1_FLAG_RXNE);
-  if(UART1_GetFlagStatus(UART1_FLAG_OR) == SET)
-    ;
-  //CBuff_Write(&comm_cbuff, UART1->DR);
-  if(usart_rx_callback)
+  volatile uint8_t c;
+  //UART1_ClearFlag(UART1_FLAG_RXNE);
+  c = UART1->SR;
+  c = (uint8_t)UART1->DR; //this way can clear flag OR and RXNE.
+  //if(usart_rx_callback)
     usart_rx_callback(c);
 }
 

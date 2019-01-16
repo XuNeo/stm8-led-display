@@ -220,7 +220,7 @@ int8_t ezled_init(ezled_def* pezled, ezledif_def*phardware){
   pezled->private.count_scroll_div = 0;
   pezled->private.scroll_en = 0;
   pezled->private.scroll_pos = 0;
-  ezled_print(pezled, "HELLO 1234.893421324");
+  ezled_print(pezled, "HELLO");
   ezled_set_blink(pezled, 0x0);
   return 0;
 }
