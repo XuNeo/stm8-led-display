@@ -182,7 +182,7 @@ void ezled_print(ezled_def* pezled, char *pstr){
           break;
         }
       index ++;
-      if(index > pezled->ezledif->szbuff)
+      if(index == pezled->ezledif->szbuff)
         break;
     }
     pstr++;
