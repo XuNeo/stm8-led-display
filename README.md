@@ -27,7 +27,7 @@ The hardware related code are in file led.c/.h usart.c/.h. The library EZLED cal
 
 As mentioned above, the protocol contains low-level protocol to encode/decode a frame. And a protocol to define a command.
 
-The serial frame is similar to HLDC ![protocol](http://www.interfacebus.com/HDLC_Protocol_Description.html). 
+The serial frame is similar to HLDC [protocol](http://www.interfacebus.com/HDLC_Protocol_Description.html). 
 
 ![SFRAME](hw/sframe.jpg)
 
