@@ -23,12 +23,16 @@
 #define CMD_SETCONTRAST     3       //set the contrast level
 #define CMD_PRINT           4       //print string to led.
 #define CMD_SETSCROLL_SPEED 5       //set scroll speed
+#define CMD_SAVE_SETTING    6       //save current settings as default settings.
+#define CMD_ADD_FONT        7       //add temp font.
 
 void command_set_blink(uint8_t *ppara, uint8_t len);
 void command_set_blink_speed(uint8_t *ppara, uint8_t len);
 void command_set_scroll_speed(uint8_t *ppara, uint8_t len);
 void command_print(uint8_t *ppara, uint8_t len);
 void command_set_contrast(uint8_t *ppara, uint8_t len);
+void command_save_settings(uint8_t *ppara, uint8_t len);
+void command_add_font(uint8_t *ppara, uint8_t len);
 
 cmd_table_def cmd_table[]={
   {
@@ -66,6 +70,17 @@ cmd_table_def cmd_table[]={
     .phandler = command_print,
     .pdesc = "",
   },
+  {
+    .command = CMD_SAVE_SETTING,
+    .phandler = command_save_settings,
+    .pdesc = "",
+  },
+  {
+    .command = CMD_ADD_FONT,
+    .phandler = command_add_font,
+    .pdesc = "",
+  },
+  
 };
 
 sframe_def sframe;

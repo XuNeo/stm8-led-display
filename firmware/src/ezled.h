@@ -73,6 +73,9 @@ typedef struct _ezled{
   led_speed_def       blink_speed;    /* Blink speed. */
   led_speed_def       scroll_speed;
   ledcont_def         led_contrast;
+  led_font_def        *pfontbuf;      /**< user programmable font */
+  uint8_t             buffsz;         /**< font buffer size. */
+  uint8_t             fontcount;      /**< user font count. */
   struct{ //private variables
     uint8_t curr_pos;
     uint8_t disp_en;        //used for blink. 
@@ -85,7 +88,9 @@ typedef struct _ezled{
 }ezled_def;
 
 int8_t ezled_init(ezled_def* pezled, ezledif_def*phardware);
-void ez_led_poll(ezled_def* pezled);
+void ezled_poll(ezled_def* pezled);
+void ezled_set_fontbuf(ezled_def* pezled, uint8_t *pbuff, uint32_t buffsz);
+int8_t ezled_font_append(ezled_def* pezled, const led_font_def *pchar);
 void ezled_print(ezled_def* pezled, char *pstr);
 void ezled_set_blink(ezled_def *pezled, uint8_t pos_set);
 void ezled_set_blink_speed(ezled_def *pezled, led_speed_def speed);
