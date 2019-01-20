@@ -21,6 +21,9 @@ void sframe_init(sframe_def *psframe, uint8_t *pbuff, uint32_t buffer_size, sfra
 
 int32_t sframe_decode(sframe_def *psframe, uint8_t *pinput, uint32_t len){
   while(len--){
+    if(psframe->state != sframe_state_end)
+      if(*pinput == SFRAME_STOP)  //if we received unexpected STOP flag, restart the parser.
+        psframe->state = sframe_state_start;
     switch(psframe->state){
       case sframe_state_start:  //waiting for start flag.
         if(*pinput == SFRAME_START)

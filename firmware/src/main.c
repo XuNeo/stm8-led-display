@@ -29,6 +29,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s.h"
 #include "ezled.h"
+#include "parameter.h"
 #include "commands.h"
 
 /* Private defines -----------------------------------------------------------*/
@@ -68,19 +69,44 @@ void command_print(uint8_t *ppara, uint8_t len){
   ezled_print(&ezled, pstr);
 }
 
+/**
+ * save current ezled settings as default.
+*/
+void command_save_settings(uint8_t *ppara, uint8_t len){
+  ezled_para_def curr;
+  curr.blink_speed = ezled.blink_speed;
+  curr.scroll_speed = ezled.scroll_speed;
+  curr.contrast = ezled.led_contrast;
+  curr.signiture = PARA_SIGNITURE;
+  parameter_set(&curr);
+}
+
+void command_add_font(uint8_t *ppara, uint8_t len){
+  led_font_def font;
+  if(len < 2) return;
+  if(ppara == 0) return;
+  if(*ppara == 0) return;
+  font.c = *ppara++;
+  font.font = *ppara;
+  ezled_font_append(&ezled, &font);
+}
+
 void main(void)
 {
+  static uint8_t fontbuff[256];
   /* Initialization of the clock */
   /* Clock divider to HSI/1 */
   CLK_HSIPrescalerConfig(CLK_PRESCALER_HSIDIV1);
   ezled_init(&ezled, &ezledif);
+  ezled_set_fontbuf(&ezled, fontbuff, 256);
+  parameter_load(&ezled);
   commands_init();
   /* Enable general interrupts */  
   enableInterrupts();
   while (1)
   {
     commands_poll();
-    ez_led_poll(&ezled);
+    ezled_poll(&ezled);
   }
   
 }

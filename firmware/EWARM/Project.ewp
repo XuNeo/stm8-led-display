@@ -912,16 +912,28 @@
             <name>$PROJ_DIR$\..\src\commands.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\src\eeprom.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\src\ezled.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\fifo.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\src\led.c</name>
+            <excluded>
+                <configuration>STM8S103</configuration>
+            </excluded>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\src\led4.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\main.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\src\parameter.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\serial_frame.c</name>
