@@ -256,7 +256,7 @@ int8_t ezled_init(ezled_def* pezled, ezledif_def*phardware){
   pezled->private.scroll_pos = 0;
   pezled->private.contrast_sel = 0;
   ezled_print(pezled, "HELLO");
-  ezled_set_blink(pezled, 0x1f);
+  ezled_set_blink(pezled, LEDPOS2);
   return 0;
 }
 

@@ -7,7 +7,7 @@
 static ezled_para_def _ezled_para@0x4000;
 const static ezled_para_def default_ezled_para={
   .signiture = PARA_SIGNITURE,
-  .contrast = {{3,10,20,60,99,50,50,50},{0,3,10,20,20,0,0,0}},
+  .contrast = {{1,20,1,3,10,20,20,20},{1,1,1,1,1,3,3,3}},
   .blink_speed = LED_SPEED3,
   .scroll_speed = LED_SPEED7,
 };
