@@ -8,8 +8,8 @@ static ezled_para_def _ezled_para@0x4000;
 const static ezled_para_def default_ezled_para={
   .signiture = PARA_SIGNITURE,
   .contrast = {{1,20,1,3,10,20,20,20},{1,1,1,1,1,3,3,3}},
-  .blink_speed = LED_SPEED3,
-  .scroll_speed = LED_SPEED7,
+  .blink_speed = LED_SPEED7,
+  .scroll_speed = LED_SPEED0,
 };
 
 /**

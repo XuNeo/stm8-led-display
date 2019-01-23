@@ -92,7 +92,7 @@ void ezled_poll(ezled_def* pezled){
   }
   /* Do blink */
   pezled->private.count_pre_div++;
-  if(pezled->private.count_pre_div == 50){
+  if(pezled->private.count_pre_div == 100){
     pezled->private.count_pre_div = 0;
     if(pezled->blink_pos_set){ //not empty
       pezled->private.count_blink_div++;
@@ -237,8 +237,8 @@ int8_t ezled_init(ezled_def* pezled, ezledif_def*phardware){
   if(pezled->ezledif->init)
     pezled->ezledif->init();  //init hardware.
   else return -2;
-  pezled->blink_speed = LED_SPEED3;  //default settings for blinkspeed.
-  pezled->scroll_speed = LED_SPEED4;  //default settings for scroll_speed.
+  pezled->blink_speed = LED_SPEED4;  //default settings for blinkspeed.
+  pezled->scroll_speed = LED_SPEED0;  //default settings for scroll_speed.
   //init contrast table;
   for(i=0;i<MAX_LED_NUM;i++){
     pezled->contrast[0][i] = 50;  //50%

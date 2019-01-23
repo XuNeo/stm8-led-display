@@ -57,6 +57,8 @@ static void led_light_up(uint8_t position_set, uint8_t seg_set){
   uint8_t gpioc_set, gpiod_set;
 
   LEDALL_OFF();
+  GPIOC->ODR = GPIOC->ODR|LED_GPIOC_MSK;
+  GPIOD->ODR = GPIOD->ODR|LED_GPIOD_MSK;
   {int i=1;while(i--);} /* Wait until the current falls to zero before turn on next seg. */
   /* Get the gpio setting from seg_set. */
   gpioc_set = 0;
@@ -68,9 +70,6 @@ static void led_light_up(uint8_t position_set, uint8_t seg_set){
       gpiod_set |= table_seg2gpiod[i];
     }
     mask <<= 1;
-  }{
-   GPIOC->ODR = (GPIOC->ODR|LED_GPIOC_MSK)&(~gpioc_set);
-   GPIOD->ODR = (GPIOD->ODR|LED_GPIOD_MSK)&(~gpiod_set);
   }
   switch(position_set){
     case LEDPOS1:
@@ -90,6 +89,9 @@ static void led_light_up(uint8_t position_set, uint8_t seg_set){
       break;
     default:
       break;
+  }{
+   GPIOC->ODR = (GPIOC->ODR|LED_GPIOC_MSK)&(~gpioc_set);
+   GPIOD->ODR = (GPIOD->ODR|LED_GPIOD_MSK)&(~gpiod_set);
   }
 }
 
