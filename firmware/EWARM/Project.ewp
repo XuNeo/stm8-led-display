@@ -151,7 +151,7 @@
                 <option>
                     <name>IccOptStrategy</name>
                     <version>0</version>
-                    <state>0</state>
+                    <state>2</state>
                 </option>
                 <option>
                     <name>IccOptLevelSlave</name>
@@ -922,12 +922,12 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\led.c</name>
-            <excluded>
-                <configuration>STM8S103</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\led4.c</name>
+            <excluded>
+                <configuration>STM8S103</configuration>
+            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\main.c</name>

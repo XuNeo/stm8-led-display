@@ -93,15 +93,9 @@ static void led_light_up(uint8_t position_set, uint8_t seg_set){
 
 static uint8_t _seg_buff[32];
 ezledif_def ezledif={
-  .phook = 0,
   .count = 4,
   .pbuff = _seg_buff,
   .szbuff = 32,
   .init = led_bsp_init,
   .light = led_light_up,
 };
-
-void timer2_isr(void){
-  TIM2_ClearITPendingBit(TIM2_IT_UPDATE);
-  ezled_timer_isr(ezledif.phook); //do this quickly and exit isr quickly.
-}

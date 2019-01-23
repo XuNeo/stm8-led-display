@@ -46,24 +46,26 @@ static const led_font_def num_font[]={
 };
 
 static uint8_t led_font_count = sizeof(num_font)/sizeof(led_font_def);
-/**
- * Contrast table, the value is for internal use. 
- * It set the off duty of selected seg. the unit is timer isr period.
-*/
-static const uint8_t contrast_table[10]={
-  200,100,50,25,15,10,8,6,4,0,
-};
 
 /**
  * @brief ezled main loop. call this function periodically.
  * @return none.
 */
 void ezled_poll(ezled_def* pezled){
-  if(pezled->flag_interrupt == 0) return;
-  pezled->flag_interrupt = 0; //clear interrupt flag.
-  if(pezled->private.curr_pos < pezled->ezledif->count){
-    uint8_t pos2index = 1<<pezled->private.curr_pos;
-    if(pos2index & pezled->private.disp_en){ //if this led is allowed to display.
+  uint8_t pos2mask, contrast;
+  //contrast divider
+  pezled->private.count_contrast++;
+  if(pezled->private.count_contrast == 101)
+    pezled->private.count_contrast = 0;
+  //scan led counter.
+  pezled->private.curr_pos ++;
+  if(pezled->private.curr_pos == pezled->ezledif->count)
+    pezled->private.curr_pos = 0;
+
+  pos2mask = 1<<pezled->private.curr_pos;
+  contrast = pezled->contrast[(pos2mask&pezled->private.contrast_sel)?1:0][pezled->private.curr_pos];
+
+  if(pezled->private.count_contrast < contrast){ //this led should be displayed.
       //fetch the content to display.
       uint8_t led;
       if(pezled->private.scroll_en){
@@ -83,17 +85,11 @@ void ezled_poll(ezled_def* pezled){
             led = pezled->ezledif->pbuff[pezled->private.curr_pos]; //get data.
         }
       }
-      pezled->ezledif->light(pos2index, led);
-    }
-    else
-      pezled->ezledif->light(LEDPOSNON, 0);
+      pezled->ezledif->light(pos2mask, led);
   }
   else{//shut down all
     pezled->ezledif->light(LEDPOSNON, 0);
   }
-  pezled->private.curr_pos ++;
-  if(pezled->private.curr_pos > contrast_table[pezled->led_contrast] + pezled->ezledif->count)
-    pezled->private.curr_pos = 0;
   /* Do blink */
   pezled->private.count_pre_div++;
   if(pezled->private.count_pre_div == 50){
@@ -102,7 +98,7 @@ void ezled_poll(ezled_def* pezled){
       pezled->private.count_blink_div++;
       if(pezled->private.count_blink_div > (LED_SPEED9 +1 - pezled->blink_speed)*20){
         pezled->private.count_blink_div = 0;
-        pezled->private.disp_en ^= pezled->blink_pos_set;
+        pezled->private.contrast_sel ^= pezled->blink_pos_set;
       }
     }
     if(pezled->private.scroll_en){
@@ -119,14 +115,6 @@ void ezled_poll(ezled_def* pezled){
 }
 
 /**
- * @brief timer isr function. call this function in timer isr.
- * @return none.
-*/
-void ezled_timer_isr(ezled_def *pezled){
-  pezled->flag_interrupt = 1;
-}
-
-/**
  * @brief set which seg to blink.
  * @param pos_set: bit-set to select which seg to blink.\
  * @return none.
@@ -134,7 +122,7 @@ void ezled_timer_isr(ezled_def *pezled){
 void ezled_set_blink(ezled_def *pezled, uint8_t pos_set){
   if(pezled == 0) return;
   pezled->blink_pos_set = pos_set;
-  pezled->private.disp_en = 0xff;
+  pezled->private.contrast_sel = 0;
 }
 
 /**
@@ -158,13 +146,34 @@ void ezled_set_scroll_speed(ezled_def *pezled, led_speed_def speed){
 }
 
 /**
- * @brief set led contrast. 10 levels available.
- * @param contrast: select from @ref ledcont_def
+ * @brief set led contrast group A. Group A is used for normal display. When blink is
+ *        enabled, the contrast will blink between Group A and B.
+ * @param contrast: 0 to 100. 0 means totally off.
  * @return none.
 */
-void ezled_set_contrast(ezled_def *pezled, ledcont_def contrast){
+void ezled_set_contrastA(ezled_def *pezled, uint8_t pos_set, uint8_t contrast){
+  uint8_t i=0;
   if(pezled == 0) return;
-  pezled->led_contrast = contrast;
+  for(;i<8;i++){
+    if(pos_set&0x01)  pezled->contrast[0][i] = contrast; //set all selected led contrast.
+    pos_set >>= 1;
+  }
+}
+
+/**
+ * @brief set led contrast group A. Group A is used for normal display. When blink is
+ *        enabled, the contrast will blink between Group A and B.
+ * @param contrast: 0 to 100. 0 means totally off.
+ * @return none.
+*/
+void ezled_set_contrastB(ezled_def *pezled, uint8_t pos_set, uint8_t contrast){
+  uint8_t i=0;
+  if(pezled == 0) return;
+  //pezled->contrast[] = contrast;
+  for(;i<8;i++){
+    if(pos_set&0x01)  pezled->contrast[1][i] = contrast;
+    pos_set >>= 1;
+  }
 }
 
 /**
@@ -220,30 +229,34 @@ void ezled_print(ezled_def* pezled, char *pstr){
  * @return 0 if succeeded, otherwise negative number
 */
 int8_t ezled_init(ezled_def* pezled, ezledif_def*phardware){
+  uint8_t i;
   if(pezled == 0) return -1;
   if(phardware == 0) return -1;
   
   pezled->ezledif = phardware;
-  phardware->phook = pezled;
   if(pezled->ezledif->init)
     pezled->ezledif->init();  //init hardware.
   else return -2;
   pezled->blink_speed = LED_SPEED3;  //default settings for blinkspeed.
   pezled->scroll_speed = LED_SPEED4;  //default settings for scroll_speed.
-  pezled->led_contrast = LEDCONT_LEVL3;   //default settings for contrast
+  //init contrast table;
+  for(i=0;i<MAX_LED_NUM;i++){
+    pezled->contrast[0][i] = 50;  //50%
+    pezled->contrast[1][i] = 0;   //3% - the minimum ON contrast, use 0 to turn off it.
+  }
   pezled->charlen = 0;
   pezled->fontcount = 0;
   pezled->pfontbuf = 0;
   pezled->buffsz = 0;
   pezled->private.curr_pos = 0;
-  pezled->private.disp_en = 0xff;
   pezled->private.count_pre_div = 0;
   pezled->private.count_blink_div = 0;
   pezled->private.count_scroll_div = 0;
   pezled->private.scroll_en = 0;
   pezled->private.scroll_pos = 0;
+  pezled->private.contrast_sel = 0;
   ezled_print(pezled, "HELLO");
-  ezled_set_blink(pezled, 0x0);
+  ezled_set_blink(pezled, 0x1f);
   return 0;
 }
 

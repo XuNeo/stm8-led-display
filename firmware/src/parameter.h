@@ -4,7 +4,7 @@
 
 #define PARA_SIGNITURE 0x4c
 typedef struct{
-  ledcont_def contrast;
+  uint8_t contrast[2][MAX_LED_NUM];
   led_speed_def blink_speed;
   led_speed_def scroll_speed;
   uint8_t signiture;

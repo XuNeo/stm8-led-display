@@ -2,6 +2,8 @@
 #define _EZLED_H_
 #include "stm8s.h"
 
+#define MAX_LED_NUM 8    //maximum LED number.
+
 #define LEDSEGA     0x01
 #define LEDSEGB     0x02
 #define LEDSEGC     0x04
@@ -24,19 +26,6 @@ typedef enum{
 }ledpos_def;
 
 typedef enum{
-  LEDCONT_LEVL0 = 0,  //lowest contrast
-  LEDCONT_LEVL1,
-  LEDCONT_LEVL2,
-  LEDCONT_LEVL3,
-  LEDCONT_LEVL4,
-  LEDCONT_LEVL5,
-  LEDCONT_LEVL6,
-  LEDCONT_LEVL7,
-  LEDCONT_LEVL8,
-  LEDCONT_LEVL9,      //highest contrast
-}ledcont_def; //led contrast level
-
-typedef enum{
   LED_SPEED0 = 0,  //lowest speed
   LED_SPEED1,
   LED_SPEED2,
@@ -52,7 +41,6 @@ typedef enum{
 /* ezLedLib interface definination*/
 
 typedef struct _ezled_if{
-  struct _ezled * phook;                /* The hook to ezled instance which is bounded to this hardware. */
   uint8_t         count;                /* How many numbers can display on led screen */
   uint8_t *       pbuff;                /* The raw data to display on LED directly */
   uint8_t         szbuff;               /* Size of provided buffer. */
@@ -66,22 +54,24 @@ typedef struct{
 }led_font_def;
 
 typedef struct _ezled{
-  uint8_t             flag_interrupt; /**< flag to indicate the timer interrupt has occured. */
   ezledif_def         *ezledif;       /* The hardware interface */
   uint8_t             charlen;        /* Character length not including '.' */
   uint8_t             blink_pos_set;  /* Private variables */
   led_speed_def       blink_speed;    /* Blink speed. */
   led_speed_def       scroll_speed;
-  ledcont_def         led_contrast;
+  //ledcont_def         led_contrast;
+  uint8_t             contrast[2][MAX_LED_NUM];    /**< contrast value for each led. [0] is default value. 
+                                      [1] is used for blink. The contrast value will blink between [0] and [1] */
   led_font_def        *pfontbuf;      /**< user programmable font */
   uint8_t             buffsz;         /**< font buffer size. */
   uint8_t             fontcount;      /**< user font count. */
   struct{ //private variables
     uint8_t curr_pos;
-    uint8_t disp_en;        //used for blink. 
+    uint8_t contrast_sel;   /**< if corresponding bit is set, this led will use contrast[1] otherwise [0]. Used for blink */
     uint8_t count_pre_div;  //the counter for pre-divider.
     uint8_t count_blink_div;    
-    uint8_t count_scroll_div;    
+    uint8_t count_scroll_div;
+    uint8_t count_contrast;
     uint8_t scroll_en;      //enable scroll function(when content to display exceed led count.).
     uint8_t scroll_pos;     //curr start position to disp buffer(ezledif.pbuff).
   }private;
@@ -95,7 +85,8 @@ void ezled_print(ezled_def* pezled, char *pstr);
 void ezled_set_blink(ezled_def *pezled, uint8_t pos_set);
 void ezled_set_blink_speed(ezled_def *pezled, led_speed_def speed);
 void ezled_set_scroll_speed(ezled_def *pezled, led_speed_def speed);
-void ezled_set_contrast(ezled_def *pezled, ledcont_def contrast);
+void ezled_set_contrastA(ezled_def *pezled, uint8_t pos_set, uint8_t contrast);
+void ezled_set_contrastB(ezled_def *pezled, uint8_t pos_set, uint8_t contrast);
 void ezled_timer_isr(ezled_def *pezled);
 
 #endif

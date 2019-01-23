@@ -38,12 +38,6 @@ static void led_bsp_init(void){
                     GPIO_MODE_OUT_PP_LOW_FAST);
   GPIO_Init(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_4|GPIO_PIN_2|GPIO_PIN_1|GPIO_PIN_3),\
                     GPIO_MODE_OUT_PP_LOW_FAST);  
-  /* Time base configuration */
-  TIM2_TimeBaseInit(TIM2_PRESCALER_1, 999);
-  TIM2_ARRPreloadConfig(ENABLE);
-  /* TIM2 enable counter */
-  TIM2_Cmd(ENABLE);
-  TIM2_ITConfig(TIM2_IT_UPDATE, ENABLE);
 }
 
 static void led_light_up(uint8_t position_set, uint8_t seg_set){
@@ -101,16 +95,9 @@ static void led_light_up(uint8_t position_set, uint8_t seg_set){
 
 static uint8_t _seg_buff[64];
 ezledif_def ezledif={
-  .phook = 0,
   .count = 5,
   .pbuff = _seg_buff,
   .szbuff = 64,
   .init = led_bsp_init,
   .light = led_light_up,
 };
-
-void timer2_isr(void){
-  TIM2_ClearITPendingBit(TIM2_IT_UPDATE);
-  if(ezledif.phook)
-    ezled_timer_isr(ezledif.phook); //do this quickly and exit isr quickly.
-}
