@@ -56,14 +56,18 @@ void command_set_scroll_speed(uint8_t *ppara, uint8_t len){
 }
 
 void command_set_contrastA(uint8_t *ppara, uint8_t len){
+  uint8_t pos;
   if(ppara == 0) return;
-  if(len != 1) return;
-  ezled_set_contrastA(&ezled, LEDPOS1, (uint8_t)*ppara);
+  if(len != 2) return;
+  pos = *ppara++;
+  ezled_set_contrastA(&ezled, pos, (uint8_t)*ppara);
 }
 void command_set_contrastB(uint8_t *ppara, uint8_t len){
+  uint8_t pos;
   if(ppara == 0) return;
-  if(len != 1) return;
-  ezled_set_contrastB(&ezled, LEDPOS1, (uint8_t)*ppara);
+  if(len != 2) return;
+  pos = *ppara++;
+  ezled_set_contrastB(&ezled, pos, (uint8_t)*ppara);
 }
 
 void command_print(uint8_t *ppara, uint8_t len){

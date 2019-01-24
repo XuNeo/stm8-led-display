@@ -4,16 +4,19 @@ STM8LED is a project to simplify display method with LEDs. The idea is to make i
 
 ![BoardPicFront](hw/front-view.jpg)
 ![BoardPicFront](hw/rear-view.jpg)
+![PCB](hw/pcb.png)
 
 # Feature
 
 On hardware side, the board can be powered from 2.95V to 5.5V directly. It only uses three pins to control content to display. On firmware side, it has below advanced features:
 * Use a customized UART protocol to pass commands to stm8led.
 * The characters to display is programmed by command.
-* The contrast can be programmed.
+* The contrast for **EVERY** LED can be programmed.
 * Each LED can be commanded to blink, and the blink speed can be programmed.
+* **Two group of contrast is provided, so LED will blink between them.**
 * The displayed content can automatically scroll left if it's too long to display.
 * The scroll speed can be programmed.
+* All the programmable parameters can be stored into internal EEPROM.
 
 # Hardware
 
@@ -45,4 +48,4 @@ Once we have a valid frame, we can easily define the command format:
 
 
 # License
-Coming...
+MIT License Copyright (c) 2019 XuNeo
