@@ -4,7 +4,7 @@ STM8LED is a project to simplify display method with LEDs. The idea is to make i
 
 ![BoardPicFront](hw/front-view.jpg)
 ![BoardPicFront](hw/rear-view.jpg)
-![PCB](hw/pcb.png)
+![PCB](hw/PCB.png)
 
 # Feature
 
