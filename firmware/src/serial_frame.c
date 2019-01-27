@@ -1,4 +1,29 @@
 /**
+ * @author Neo Xu (neo.xu1990@gmail.com)
+ * @license The MIT License (MIT)
+ * 
+ * Copyright (c) 2019 Neo Xu
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ * 
+*/
+/**
  * Serial frame uses the similar method in HDLC protocol.
  * high level data link control protocol
  * 0x7d as frame start and 0x7c as end marker(not same as HDLC)
@@ -9,16 +34,27 @@
  * */
 #include "serial_frame.h"
 
-void sframe_init(sframe_def *psframe, uint8_t *pbuff, uint32_t buffer_size, sframe_callback callback){
+/**
+ * @brief init sframe with given buffer(and size) and function pointer.
+ * @param pbuff: the buffer used to store frame received.
+ * @param buffsz: buffer size.
+ * @param callback: the function pointer that will be called when valid frame is received.
+ * @return none.
+*/
+void sframe_init(sframe_def *psframe, uint8_t *pbuff, uint32_t buffsz, sframe_callback callback){
   if(psframe == 0) return;
   psframe->pbuff = pbuff;
-  psframe->max_frame_len = buffer_size;
+  psframe->buffsz = buffsz;
   psframe->state = sframe_state_start;
   psframe->frame_len = 0;
   psframe->windex = 0;
   psframe->callback = callback;
 }
 
+/**
+ * @brief decode the input data in buffer.
+ * @return return 0.
+*/
 int32_t sframe_decode(sframe_def *psframe, uint8_t *pinput, uint32_t len){
   while(len--){
     if(psframe->state != sframe_state_end)
@@ -60,6 +96,41 @@ int32_t sframe_decode(sframe_def *psframe, uint8_t *pinput, uint32_t len){
     }
     pinput ++;
   }
+  return 0;
+}
+
+/**
+ * @brief encode the data and output it through function pfunc.
+ * @param pfunc: the function used to output one character.
+ * @param pdata: pointer to the data.
+ * @param len: data length.
+ * @return none.
+*/
+int32_t sframe_encode(sframe_outfunc pfunc, uint8_t *pdata, uint32_t len){
+  if(pdata == 0) return 0;
+  if(pfunc == 0) return 0;
+  if(len == 0) return 0;
+  /**
+   * send out frame start and frame length.
+  */
+  pfunc((uint8_t)SFRAME_START);
+  pfunc((uint8_t)len);
+  //sending out data
+  while(len){
+    switch (*pdata){
+      case SFRAME_START:
+      case SFRAME_STOP:
+      case SFRAME_ESCAPE:
+      pfunc((uint8_t)SFRAME_ESCAPE);
+      pfunc(*pdata++ ^ 0x20);
+      len --;
+      continue;
+    }
+    pfunc(*pdata++);
+    len--;
+  }
+  pfunc((uint8_t)SFRAME_STOP);
+  pfunc((uint8_t)SFRAME_STOP);
   return 0;
 }
 
