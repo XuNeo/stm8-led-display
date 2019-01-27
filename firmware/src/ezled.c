@@ -216,8 +216,10 @@ void ezled_print(ezled_def* pezled, char *pstr){
     pstr++;
   }
   pezled->charlen = index;
-  if(pezled->charlen > pezled->ezledif->count)
+  if(pezled->charlen > pezled->ezledif->count){
     pezled->private.scroll_en = 1;  //too many to dispaly, need to scroll
+	pezled->private.scroll_pos = 0; //start from beginning
+  }
   else
     pezled->private.scroll_en = 0;
 }
