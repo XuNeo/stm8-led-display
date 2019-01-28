@@ -46,24 +46,7 @@
                         LEDS5_OFF();\
                       }while(0)
 
-static void led_bsp_init(void){
-  //leds1-> PC3, leds2->PB4, leds3->PA1, leds4->PB5, leds4->PA3
-  //LEDA->PC5, LEDB->PC7, LEDC->PD4, LEDD->PD2, LEDE->PD1, LEDF->PC6, LEDG->PC4, LEDDP->PD3
-  GPIO_Init(GPIOC, GPIO_PIN_3, GPIO_MODE_OUT_PP_LOW_FAST);
-  GPIO_Init(GPIOB, GPIO_PIN_4, GPIO_MODE_OUT_PP_LOW_FAST);
-  GPIO_Init(GPIOA, GPIO_PIN_1, GPIO_MODE_OUT_PP_LOW_FAST);
-  GPIO_Init(GPIOB, GPIO_PIN_5, GPIO_MODE_OUT_PP_LOW_FAST);
-  GPIO_Init(GPIOA, GPIO_PIN_3, GPIO_MODE_OUT_PP_LOW_FAST);
-  LEDS1_OFF();
-  LEDS2_OFF();
-  LEDS3_OFF();
-  LEDS4_OFF();
-  LEDS5_OFF();
-  GPIO_Init(GPIOC, (GPIO_Pin_TypeDef)(GPIO_PIN_5|GPIO_PIN_7|GPIO_PIN_6|GPIO_PIN_4),\
-                    GPIO_MODE_OUT_PP_LOW_FAST);
-  GPIO_Init(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_4|GPIO_PIN_2|GPIO_PIN_1|GPIO_PIN_3),\
-                    GPIO_MODE_OUT_PP_LOW_FAST);  
-}
+static void led_bsp_init(void);
 
 static void led_light_up(uint8_t position_set, uint8_t seg_set){
 //LEDA->PC5, LEDB->PC7, LEDC->PD4, LEDD->PD2, LEDE->PD1, LEDF->PC6, LEDG->PC4, LEDDP->PD3
@@ -122,9 +105,30 @@ static void led_light_up(uint8_t position_set, uint8_t seg_set){
 
 static uint8_t _seg_buff[64];
 ezledif_def ezledif={
+  .address = 0x12,
   .count = 5,
   .pbuff = _seg_buff,
   .szbuff = 64,
   .init = led_bsp_init,
   .light = led_light_up,
 };
+
+static void led_bsp_init(void){
+  //leds1-> PC3, leds2->PB4, leds3->PA1, leds4->PB5, leds4->PA3
+  //LEDA->PC5, LEDB->PC7, LEDC->PD4, LEDD->PD2, LEDE->PD1, LEDF->PC6, LEDG->PC4, LEDDP->PD3
+  GPIO_Init(GPIOC, GPIO_PIN_3, GPIO_MODE_OUT_PP_LOW_FAST);
+  GPIO_Init(GPIOB, GPIO_PIN_4, GPIO_MODE_OUT_PP_LOW_FAST);
+  GPIO_Init(GPIOA, GPIO_PIN_1, GPIO_MODE_OUT_PP_LOW_FAST);
+  GPIO_Init(GPIOB, GPIO_PIN_5, GPIO_MODE_OUT_PP_LOW_FAST);
+  GPIO_Init(GPIOA, GPIO_PIN_3, GPIO_MODE_OUT_PP_LOW_FAST);
+  LEDS1_OFF();
+  LEDS2_OFF();
+  LEDS3_OFF();
+  LEDS4_OFF();
+  LEDS5_OFF();
+  GPIO_Init(GPIOC, (GPIO_Pin_TypeDef)(GPIO_PIN_5|GPIO_PIN_7|GPIO_PIN_6|GPIO_PIN_4),\
+                    GPIO_MODE_OUT_PP_LOW_FAST);
+  GPIO_Init(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_4|GPIO_PIN_2|GPIO_PIN_1|GPIO_PIN_3),\
+                    GPIO_MODE_OUT_PP_LOW_FAST);  
+  ezledif.address = *(uint8_t*)(0x4865);  //init the address with unique id.
+}

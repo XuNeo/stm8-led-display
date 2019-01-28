@@ -125,7 +125,7 @@ void main(void)
   ezled_init(&ezled, &ezledif);
   ezled_set_fontbuf(&ezled, fontbuff, 256);
   parameter_load(&ezled);
-  commands_init();
+  commands_init(ezled.ezledif->address);
   /* Enable general interrupts */  
   enableInterrupts();
   while (1)

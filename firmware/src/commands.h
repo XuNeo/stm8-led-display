@@ -32,7 +32,7 @@ typedef struct{
   char *pdesc;        //description of this command.
 }cmd_table_def;
 
-void commands_init(void);
+void commands_init(uint8_t addr);
 void commands_poll(void);
 
 #endif

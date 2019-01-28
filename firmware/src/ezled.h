@@ -66,6 +66,7 @@ typedef enum{
 /* ezLedLib interface definination*/
 
 typedef struct _ezled_if{
+  uint8_t         address;              /**< address of this device. provided to upper level application to allow multiple board connection with shared bus. */
   uint8_t         count;                /* How many numbers can display on led screen */
   uint8_t *       pbuff;                /* The raw data to display on LED directly */
   uint8_t         szbuff;               /* Size of provided buffer. */

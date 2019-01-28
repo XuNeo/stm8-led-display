@@ -34,8 +34,9 @@
 */
 /**
  * The frame data definition for a valid commands
- * BYTE0: command
- * BYTE1: parameter count in bytes
+ * BYTE0: addr
+ * BYTE1: command
+ * BYTE2: parameter count in bytes
  * BYTE[2:BYTE1+1] parameters
 */
 
@@ -128,14 +129,18 @@ cmd_table_def cmd_table[]={
   },
   
 };
-
-sframe_def sframe;
-fifo_def uart_fifo;
+static uint8_t address;
+static sframe_def sframe;
+static fifo_def uart_fifo;
 static inline void command_parser(uint8_t *pframe, uint32_t len){
-  uint8_t cmd_code, para_len;
+  uint8_t cmd_code, para_len, addr;
   uint8_t i;
   if(pframe == 0) return;
-  if(len < 2) return; //we have cmd+len at least
+  if(len < 3) return; //we have addr+cmd+len at least
+  addr = *pframe++;
+  if(addr != address)
+    if(addr != 0) //address zero is broadcast address.
+      return;
   cmd_code = *pframe++;
   para_len = *pframe++;
   for(i=0; i<(sizeof(cmd_table)/sizeof(cmd_table_def)); i++){
@@ -158,12 +163,13 @@ static void _sframe_callback(uint8_t* pbuff, uint32_t len){
   command_parser(pbuff, len);
 }
 
-void commands_init(void){
+void commands_init(uint8_t addr){
   static uint8_t frame_buff[128];
   static uint8_t fifobuff[128];
   fifo_init(&uart_fifo, fifobuff, 128);
   usart_init(115200, (void*)_usart_rx_callback);
   sframe_init(&sframe, frame_buff, 128, _sframe_callback);  //used to decode frame and store decoded frame to buffer.
+  address = addr;
 }
 
 //poll this functio to process command received(frame received)
