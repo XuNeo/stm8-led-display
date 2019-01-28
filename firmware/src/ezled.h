@@ -84,9 +84,9 @@ typedef struct _ezled{
   uint8_t             blink_pos_set;  /* Private variables */
   led_speed_def       blink_speed;    /* Blink speed. */
   led_speed_def       scroll_speed;
-  //ledcont_def         led_contrast;
-  uint8_t             contrast[2][MAX_LED_NUM];    /**< contrast value for each led. [0] is default value. 
-                                      [1] is used for blink. The contrast value will blink between [0] and [1] */
+  uint8_t             contrast[3][MAX_LED_NUM];    /**< contrast value for each led. [0] is default value. 
+                                                      [1] is used for blink. The contrast value will blink between [0] and [1]. 
+                                                      [2] is used for highlight function. */
   led_font_def        *pfontbuf;      /**< user programmable font */
   uint8_t             buffsz;         /**< font buffer size. */
   uint8_t             fontcount;      /**< user font count. */
@@ -99,6 +99,8 @@ typedef struct _ezled{
     uint8_t count_contrast;
     uint8_t scroll_en;      //enable scroll function(when content to display exceed led count.).
     uint8_t scroll_pos;     //curr start position to disp buffer(ezledif.pbuff).
+    uint8_t hlight_en;      /**< enable the built-in highlight function. It use contrast[3] to set contrast */
+    uint8_t contrast[MAX_LED_NUM];  /**< The contrast table built for high-light function. */
   }private;
 }ezled_def;
 
@@ -110,8 +112,10 @@ void ezled_print(ezled_def* pezled, char *pstr);
 void ezled_set_blink(ezled_def *pezled, uint8_t pos_set);
 void ezled_set_blink_speed(ezled_def *pezled, led_speed_def speed);
 void ezled_set_scroll_speed(ezled_def *pezled, led_speed_def speed);
+void ezled_set_hlight(ezled_def *ezled, uint8_t whichled);
 void ezled_set_contrastA(ezled_def *pezled, uint8_t pos_set, uint8_t contrast);
 void ezled_set_contrastB(ezled_def *pezled, uint8_t pos_set, uint8_t contrast);
+void ezled_set_contrastC(ezled_def *pezled,  uint8_t contrast[8]);
 void ezled_timer_isr(ezled_def *pezled);
 
 #endif

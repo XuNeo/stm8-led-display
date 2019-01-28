@@ -47,10 +47,12 @@
 #define CMD_SETBLINK_SPEED  2       //set the blink speed
 #define CMD_SETCONTRASTA    3       //set the contrast level
 #define CMD_SETCONTRASTB    4       //set the contrast level
+#define CMD_SETCONTRASTC    10      //Set the contrast table for highlight.
 #define CMD_PRINT           5       //print string to led.
 #define CMD_SETSCROLL_SPEED 6       //set scroll speed
 #define CMD_SAVE_SETTING    7       //save current settings as default settings.
 #define CMD_ADD_FONT        8       //add temp font.
+#define CMD_SET_HLIGHT      9       //set which led is to highlight.
 
 void command_set_blink(uint8_t *ppara, uint8_t len);
 void command_set_blink_speed(uint8_t *ppara, uint8_t len);
@@ -58,8 +60,10 @@ void command_set_scroll_speed(uint8_t *ppara, uint8_t len);
 void command_print(uint8_t *ppara, uint8_t len);
 void command_set_contrastA(uint8_t *ppara, uint8_t len);
 void command_set_contrastB(uint8_t *ppara, uint8_t len);
+void command_set_contrastC(uint8_t *ppara, uint8_t len);
 void command_save_settings(uint8_t *ppara, uint8_t len);
 void command_add_font(uint8_t *ppara, uint8_t len);
+void command_set_hlight(uint8_t *ppara, uint8_t len);
 
 cmd_table_def cmd_table[]={
   {
@@ -98,6 +102,11 @@ cmd_table_def cmd_table[]={
     .pdesc = "",
   },
   {
+    .command = CMD_SETCONTRASTC,
+    .phandler = command_set_contrastC,
+    .pdesc = "",
+  },
+  {
     .command = CMD_PRINT,
     .phandler = command_print,
     .pdesc = "",
@@ -110,6 +119,11 @@ cmd_table_def cmd_table[]={
   {
     .command = CMD_ADD_FONT,
     .phandler = command_add_font,
+    .pdesc = "",
+  },
+  {
+    .command = CMD_SET_HLIGHT,
+    .phandler = command_set_hlight,
     .pdesc = "",
   },
   

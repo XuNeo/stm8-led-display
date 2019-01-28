@@ -53,10 +53,12 @@ static const led_font_def num_font[]={
   {'f', LEDSEGE|LEDSEGA|LEDSEGF|LEDSEGG,                          },/* f */
   {'F', LEDSEGE|LEDSEGA|LEDSEGF|LEDSEGG,                          },/* f */
   {'g', LEDSEGC|LEDSEGD|LEDSEGA|LEDSEGB|LEDSEGF|LEDSEGG,          },/* g */
+  {'G', LEDSEGC|LEDSEGD|LEDSEGA|LEDSEGB|LEDSEGF|LEDSEGG,          },/* G */
   {'h', LEDSEGF|LEDSEGE|LEDSEGG|LEDSEGC,                          },/* h */
   {'H', LEDSEGC|LEDSEGE|LEDSEGB|LEDSEGF|LEDSEGG,                  },/* H */
   {'l', LEDSEGE|LEDSEGF,                                          },/* l */
   {'L', LEDSEGD|LEDSEGE|LEDSEGF,                                  },/* L */
+  {'N', LEDSEGC|LEDSEGE|LEDSEGB|LEDSEGF|LEDSEGA,                  },/* N */
   {'n', LEDSEGE|LEDSEGG|LEDSEGC,                                  },/* n */
   {'o', LEDSEGC|LEDSEGD|LEDSEGE|LEDSEGG,                          },/* o */
   {'O', LEDSEGC|LEDSEGD|LEDSEGE|LEDSEGA|LEDSEGB|LEDSEGF,          },/* O */
@@ -88,7 +90,10 @@ void ezled_poll(ezled_def* pezled){
     pezled->private.curr_pos = 0;
 
   pos2mask = 1<<pezled->private.curr_pos;
-  contrast = pezled->contrast[(pos2mask&pezled->private.contrast_sel)?1:0][pezled->private.curr_pos];
+  if(pezled->private.hlight_en)
+    contrast = pezled->private.contrast[pezled->private.curr_pos];
+  else
+    contrast = pezled->contrast[(pos2mask&pezled->private.contrast_sel)?1:0][pezled->private.curr_pos];
 
   if(pezled->private.count_contrast < contrast){ //this led should be displayed.
       //fetch the content to display.
@@ -171,6 +176,21 @@ void ezled_set_scroll_speed(ezled_def *pezled, led_speed_def speed){
 }
 
 /**
+ * @brief set which one led to highlight.
+ * @param whichled: must be in range of ezled->ezledif->count - 1 starts from 0
+*/
+void ezled_set_hlight(ezled_def *ezled, uint8_t whichled){
+  uint8_t i, index;
+  if(ezled == 0) return;
+  if(whichled > ezled->ezledif->count - 1) return;
+  index = ezled->ezledif->count - 1; //get the maximum contrast value index.
+  for(i=0; i<=whichled; i++)
+    ezled->private.contrast[i] = ezled->contrast[3][index - whichled + i];
+  for(;i<ezled->ezledif->count; i++)
+    ezled->private.contrast[i] = ezled->contrast[3][index - (whichled - i)];
+}
+
+/**
  * @brief set led contrast group A. Group A is used for normal display. When blink is
  *        enabled, the contrast will blink between Group A and B.
  * @param contrast: 0 to 100. 0 means totally off.
@@ -198,6 +218,22 @@ void ezled_set_contrastB(ezled_def *pezled, uint8_t pos_set, uint8_t contrast){
   for(;i<8;i++){
     if(pos_set&0x01)  pezled->contrast[1][i] = contrast;
     pos_set >>= 1;
+  }
+}
+
+/**
+ * @brief set led contrast group C. Group C is used for high-light function.
+ * This table defines the contrast value with the first one has lowest contrast and the end one(
+ * or the last one that used by this pezled) has highest contrast.
+ * @param contrast[8]: The contrast table, where only pezled->ezledif->count number of element is needed.
+ * @return none.
+*/
+void ezled_set_contrastC(ezled_def *pezled,  uint8_t contrast[8]){
+  uint8_t i=0;
+  if(pezled == 0) return;
+  if(contrast == 0) return;
+  for(;i<8;i++){
+    pezled->contrast[3][i] = contrast[i];
   }
 }
 
