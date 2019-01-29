@@ -72,7 +72,7 @@ static const led_font_def num_font[]={
   {' ', 0,                                                        },/* LED Dark */
 };
 
-static uint8_t led_font_count = sizeof(num_font)/sizeof(led_font_def);
+static const uint8_t led_font_count = sizeof(num_font)/sizeof(led_font_def);
 
 /**
  * @brief ezled main loop. call this function periodically.
@@ -189,9 +189,9 @@ void ezled_set_hlight(ezled_def *ezled, uint8_t whichled){
   ezled->private.hlight_en = 1;
   index = ezled->ezledif->count - 1; //get the maximum contrast value index.
   for(i=0; i<=whichled; i++)
-    ezled->private.contrast[i] = ezled->contrast[3][index - whichled + i];
+    ezled->private.contrast[i] = ezled->contrast[2][index - whichled + i];
   for(;i<ezled->ezledif->count; i++)
-    ezled->private.contrast[i] = ezled->contrast[3][index - (whichled - i)];
+    ezled->private.contrast[i] = ezled->contrast[2][index - (i - whichled)];
 }
 
 /**
@@ -237,7 +237,7 @@ void ezled_set_contrastC(ezled_def *pezled,  uint8_t contrast[8]){
   if(pezled == 0) return;
   if(contrast == 0) return;
   for(;i<8;i++){
-    pezled->contrast[3][i] = contrast[i];
+    pezled->contrast[2][i] = contrast[i];
   }
 }
 
@@ -296,7 +296,6 @@ void ezled_print(ezled_def* pezled, char *pstr){
  * @return 0 if succeeded, otherwise negative number
 */
 int8_t ezled_init(ezled_def* pezled, ezledif_def*phardware){
-  uint8_t i;
   if(pezled == 0) return -1;
   if(phardware == 0) return -1;
   
@@ -304,13 +303,7 @@ int8_t ezled_init(ezled_def* pezled, ezledif_def*phardware){
   if(pezled->ezledif->init)
     pezled->ezledif->init();  //init hardware.
   else return -2;
-  pezled->blink_speed = LED_SPEED4;  //default settings for blinkspeed.
-  pezled->scroll_speed = LED_SPEED0;  //default settings for scroll_speed.
-  //init contrast table;
-  for(i=0;i<MAX_LED_NUM;i++){
-    pezled->contrast[0][i] = 50;  //50%
-    pezled->contrast[1][i] = 0;   //3% - the minimum ON contrast, use 0 to turn off it.
-  }
+  
   pezled->charlen = 0;
   pezled->fontcount = 0;
   pezled->pfontbuf = 0;
@@ -322,8 +315,6 @@ int8_t ezled_init(ezled_def* pezled, ezledif_def*phardware){
   pezled->private.scroll_en = 0;
   pezled->private.scroll_pos = 0;
   pezled->private.contrast_sel = 0;
-  ezled_print(pezled, "HELLO");
-  ezled_set_blink(pezled, LEDPOS2);
   return 0;
 }
 

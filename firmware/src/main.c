@@ -123,8 +123,11 @@ void main(void)
   /* Clock divider to HSI/1 */
   CLK_HSIPrescalerConfig(CLK_PRESCALER_HSIDIV1);
   ezled_init(&ezled, &ezledif);
-  ezled_set_fontbuf(&ezled, fontbuff, 256);
   parameter_load(&ezled);
+  ezled_set_fontbuf(&ezled, fontbuff, 256);
+  ezled_print(&ezled, "HELLO");
+  ezled_set_blink(&ezled, LEDPOS2);
+  ezled_set_hlight(&ezled, 0);
   commands_init();
   /* Enable general interrupts */  
   enableInterrupts();
