@@ -114,6 +114,7 @@ ezledif_def ezledif={
 };
 
 static void led_bsp_init(void){
+  uint8_t i;
   //leds1-> PC3, leds2->PB4, leds3->PA1, leds4->PB5, leds4->PA3
   //LEDA->PC5, LEDB->PC7, LEDC->PD4, LEDD->PD2, LEDE->PD1, LEDF->PC6, LEDG->PC4, LEDDP->PD3
   GPIO_Init(GPIOC, GPIO_PIN_3, GPIO_MODE_OUT_PP_LOW_FAST);
@@ -129,6 +130,8 @@ static void led_bsp_init(void){
   GPIO_Init(GPIOC, (GPIO_Pin_TypeDef)(GPIO_PIN_5|GPIO_PIN_7|GPIO_PIN_6|GPIO_PIN_4),\
                     GPIO_MODE_OUT_PP_LOW_FAST);
   GPIO_Init(GPIOD, (GPIO_Pin_TypeDef)(GPIO_PIN_4|GPIO_PIN_2|GPIO_PIN_1|GPIO_PIN_3),\
-                    GPIO_MODE_OUT_PP_LOW_FAST);  
-  ezledif.address = *(uint8_t*)(0x4865);  //init the address with unique id.
+                    GPIO_MODE_OUT_PP_LOW_FAST);
+  ezledif.address = 0;
+  for(i=0;i<12;i++)
+    ezledif.address ^= *(uint8_t*)(0x4865+i);  //init the address with unique id.
 }

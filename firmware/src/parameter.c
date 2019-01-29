@@ -35,7 +35,7 @@ static ezled_para_def _ezled_para@0x4080;
 */
 const static ezled_para_def default_ezled_para={
   .signiture = PARA_SIGNITURE,
-  .contrast = {{1,3,9,30,70,70,90,1},{70,30,9,3,1,3,3,3}, {1,3,9,20,70,1,1,1}},
+  .contrast = {{90,90,90,90,90,90,90,90},{70,30,9,3,1,3,3,3}, {1,3,9,20,70,1,1,1}},
   .blink_speed = LED_SPEED0,
   .scroll_speed = LED_SPEED0,
 };
