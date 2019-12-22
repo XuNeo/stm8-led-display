@@ -33,6 +33,7 @@ typedef struct{
   led_speed_def blink_speed;
   led_speed_def scroll_speed;
   uint8_t signiture;
+  uint8_t addr; //module address
 }ezled_para_def;
 
 void parameter_load(ezled_def *ezled);

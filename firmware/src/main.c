@@ -89,6 +89,13 @@ void command_print(uint8_t *ppara, uint8_t len){
   ezled_print(&ezled, pstr);
 }
 
+void command_set_addr(uint8_t *ppara, uint8_t len){
+  if(ppara == 0) return;
+  if(len != 1) return;
+  //the first parameter is address
+  commands_set_addr(*ppara);
+}
+
 /**
  * save current ezled settings as default.
 */
@@ -103,6 +110,7 @@ void command_save_settings(uint8_t *ppara, uint8_t len){
     curr.contrast[2][i] = ezled.contrast[2][i];
   }
   curr.signiture = PARA_SIGNITURE;
+  curr.addr = commands_get_addr();
   parameter_set(&curr);
 }
 
@@ -118,6 +126,7 @@ void command_add_font(uint8_t *ppara, uint8_t len){
 
 void main(void)
 {
+  ezled_para_def* para;
   static uint8_t fontbuff[256];
   /* Initialization of the clock */
   /* Clock divider to HSI/1 */
@@ -125,10 +134,8 @@ void main(void)
   ezled_init(&ezled, &ezledif);
   parameter_load(&ezled);
   ezled_set_fontbuf(&ezled, fontbuff, 256);
-//  ezled_print(&ezled, "HELLO");
-//  ezled_set_blink(&ezled, LEDPOS2);
-//  ezled_set_hlight(&ezled, 0);
-  commands_init(ezled.ezledif->address);
+  para = parameter_get();
+  commands_init(para->addr);
   /* Enable general interrupts */  
   enableInterrupts();
   while (1)

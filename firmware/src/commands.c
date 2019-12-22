@@ -55,6 +55,8 @@
 #define CMD_ADD_FONT        8       //add temp font.
 #define CMD_SET_HLIGHT      9       //set which led is to highlight.
 
+#define CMD_SET_ADDR        0xa0    //set new address.
+
 void command_set_blink(uint8_t *ppara, uint8_t len);
 void command_set_blink_speed(uint8_t *ppara, uint8_t len);
 void command_set_scroll_speed(uint8_t *ppara, uint8_t len);
@@ -65,6 +67,7 @@ void command_set_contrastC(uint8_t *ppara, uint8_t len);
 void command_save_settings(uint8_t *ppara, uint8_t len);
 void command_add_font(uint8_t *ppara, uint8_t len);
 void command_set_hlight(uint8_t *ppara, uint8_t len);
+void command_set_addr(uint8_t *ppara, uint8_t len);
 
 cmd_table_def cmd_table[]={
   {
@@ -127,6 +130,11 @@ cmd_table_def cmd_table[]={
     .phandler = command_set_hlight,
     .pdesc = "",
   },
+  {
+    .command = CMD_SET_ADDR,
+    .phandler = command_set_addr,
+    .pdesc = "",
+  },
   
 };
 static uint8_t address;
@@ -171,6 +179,16 @@ void commands_init(uint8_t addr){
   sframe_init(&sframe, frame_buff, 128, _sframe_callback);  //used to decode frame and store decoded frame to buffer.
   address = addr;
 }
+
+void commands_set_addr(uint8_t addr){
+  address = addr;
+}
+
+uint8_t commands_get_addr(void){
+  return address;
+}
+
+
 
 //poll this functio to process command received(frame received)
 void commands_poll(void){

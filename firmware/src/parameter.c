@@ -38,6 +38,7 @@ const static ezled_para_def default_ezled_para={
   .contrast = {{90,90,90,90,90,90,90,90},{70,30,9,3,1,3,3,3}, {1,3,9,20,70,1,1,1}},
   .blink_speed = LED_SPEED0,
   .scroll_speed = LED_SPEED0,
+  .addr = 0,  //do not use address 0, which is the broadcast address.
 };
 
 /**
@@ -48,7 +49,18 @@ void parameter_load(ezled_def *ezled){
   uint8_t i;
   if(ezled == 0) return;
   if(_ezled_para.signiture != PARA_SIGNITURE){
-    eeprom_write((uint8_t*)&_ezled_para, (uint8_t*)&default_ezled_para, sizeof(ezled_para_def));
+    ezled_para_def shadow;
+    uint8_t addr = 0;
+    for(int i=0;i<12;i++)
+      addr ^= *(uint8_t*)(0x4865+i);  //init the address with unique id.
+    //copy default settings to shadow var.
+    char *pdst = (char*)&shadow;
+    char *psrc = (char*)&default_ezled_para;
+    for(int i=0;i<sizeof(ezled_para_def);i++){
+      *pdst++ = *psrc++;
+    }
+    shadow.addr = addr;
+    eeprom_write((uint8_t*)&_ezled_para, (uint8_t*)&shadow, sizeof(ezled_para_def));
   }
   ezled_set_blink_speed(ezled, _ezled_para.blink_speed);
   ezled_set_scroll_speed(ezled, _ezled_para.scroll_speed);

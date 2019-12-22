@@ -35,4 +35,6 @@ typedef struct{
 void commands_init(uint8_t addr);
 void commands_poll(void);
 
+void commands_set_addr(uint8_t addr);
+uint8_t commands_get_addr(void);
 #endif
