@@ -67,6 +67,7 @@ static const led_font_def num_font[]={
   {'s', LEDSEGC|LEDSEGD|LEDSEGA|LEDSEGF|LEDSEGG,                  },/* s */
   {'t', LEDSEGD|LEDSEGE|LEDSEGF|LEDSEGG,                          },/* t */
   {'u', LEDSEGC|LEDSEGD|LEDSEGE,                                  },/* u */
+  {'U', LEDSEGB|LEDSEGC|LEDSEGD|LEDSEGE|LEDSEGF,                  },/* U */
   {'y', LEDSEGC|LEDSEGD|LEDSEGB|LEDSEGF|LEDSEGG,                  },/* y */
   {'-', LEDSEGG,                                                  },/* - */
   {' ', 0,                                                        },/* LED Dark */
