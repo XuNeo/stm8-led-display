@@ -182,11 +182,16 @@ void ezled_set_scroll_speed(ezled_def *pezled, led_speed_def speed){
 void ezled_set_hlight(ezled_def *ezled, uint8_t whichled){
   uint8_t i, index;
   if(ezled == 0) return;
-  if(whichled > ezled->ezledif->count - 1){
+  if(whichled > ezled->ezledif->count){
     ezled->private.hlight_en = 0;
     return;
   }
   ezled->private.hlight_en = 1;
+  if(whichled == ezled->ezledif->count){
+    for(i=0; i<=whichled; i++)
+      ezled->private.contrast[i] = ezled->contrast[2][0]; //set all to lowest contrast
+    return;
+  }
   index = ezled->ezledif->count - 1; //get the maximum contrast value index.
   for(i=0; i<=whichled; i++)
     ezled->private.contrast[i] = ezled->contrast[2][index - whichled + i];
