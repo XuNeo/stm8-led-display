@@ -51,7 +51,7 @@ static const led_font_def num_font[]={
   {'e', LEDSEGD|LEDSEGE|LEDSEGA|LEDSEGB|LEDSEGF|LEDSEGG           },/* e */
   {'E', LEDSEGD|LEDSEGE|LEDSEGA|LEDSEGF|LEDSEGG,                  },/* E */
   {'f', LEDSEGE|LEDSEGA|LEDSEGF|LEDSEGG,                          },/* f */
-  {'F', LEDSEGE|LEDSEGA|LEDSEGF|LEDSEGG,                          },/* f */
+  {'F', LEDSEGE|LEDSEGA|LEDSEGF|LEDSEGG,                          },/* F */
   {'g', LEDSEGC|LEDSEGD|LEDSEGA|LEDSEGB|LEDSEGF|LEDSEGG,          },/* g */
   {'G', LEDSEGC|LEDSEGD|LEDSEGA|LEDSEGB|LEDSEGF|LEDSEGG,          },/* G */
   {'h', LEDSEGF|LEDSEGE|LEDSEGG|LEDSEGC,                          },/* h */
@@ -62,7 +62,8 @@ static const led_font_def num_font[]={
   {'n', LEDSEGE|LEDSEGG|LEDSEGC,                                  },/* n */
   {'o', LEDSEGC|LEDSEGD|LEDSEGE|LEDSEGG,                          },/* o */
   {'O', LEDSEGC|LEDSEGD|LEDSEGE|LEDSEGA|LEDSEGB|LEDSEGF,          },/* O */
-  {'p', LEDSEGE|LEDSEGA|LEDSEGB|LEDSEGG|LEDSEGF,                  },/* P */
+  {'p', LEDSEGE|LEDSEGA|LEDSEGB|LEDSEGG|LEDSEGF,                  },/* p */
+  {'P', LEDSEGE|LEDSEGA|LEDSEGB|LEDSEGG|LEDSEGF,                  },/* P */
   {'r', LEDSEGE|LEDSEGG,                                          },/* r */
   {'s', LEDSEGC|LEDSEGD|LEDSEGA|LEDSEGF|LEDSEGG,                  },/* s */
   {'t', LEDSEGD|LEDSEGE|LEDSEGF|LEDSEGG,                          },/* t */
@@ -254,20 +255,21 @@ void ezled_set_contrastC(ezled_def *pezled,  uint8_t contrast[8]){
 void ezled_print(ezled_def* pezled, char *pstr){
   uint8_t index = 0;
   uint8_t flag_found;
+  uint8_t buff[32];
   pezled->charlen = 0;
   while(*pstr){
     uint8_t i;
     flag_found = 0;
     if(*pstr == '.'){
       if(index)
-        pezled->ezledif->pbuff[index-1] |= LEDSEGDP;
+        buff[index-1] |= LEDSEGDP;
     }
     else{
-      pezled->ezledif->pbuff[index] = 0;
+      buff[index] = 0;
       if(pezled->fontcount){ //firstly search if there is customized font.
         for(i=0;i<pezled->fontcount;i++){
           if(*pstr == pezled->pfontbuf[i].c){
-            pezled->ezledif->pbuff[index] = pezled->pfontbuf[i].font;
+            buff[index] = pezled->pfontbuf[i].font;
             flag_found = 1;
             break;
           }
@@ -276,7 +278,7 @@ void ezled_print(ezled_def* pezled, char *pstr){
       if(flag_found == 0){  //continue to search in build-in font
         for(i=0;i<led_font_count;i++)
           if(*pstr == num_font[i].c){
-            pezled->ezledif->pbuff[index] = num_font[i].font;
+            buff[index] = num_font[i].font;
             break;
         }
       }
@@ -287,6 +289,10 @@ void ezled_print(ezled_def* pezled, char *pstr){
     pstr++;
   }
   pezled->charlen = index;
+  //copy buffer content to display buffer
+  for(int i=0; i<index; i++){
+    pezled->ezledif->pbuff[i] = buff[i];
+  }
   if(pezled->charlen > pezled->ezledif->count){
     pezled->private.scroll_en = 1;  //too many to dispaly, need to scroll
 	pezled->private.scroll_pos = 0; //start from beginning
