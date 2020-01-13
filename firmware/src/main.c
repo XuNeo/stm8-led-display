@@ -124,6 +124,26 @@ void command_add_font(uint8_t *ppara, uint8_t len){
   ezled_font_append(&ezled, &font);
 }
 
+void print_module_addr(uint8_t addr){
+  char str[9];
+  uint8_t i=0, temp;
+  str[i++] = 'A';
+  str[i++] = 'D';
+  if(ezled.ezledif->count > 4)
+    str[i++] = 'D';
+  str[i++] = '.';
+  temp = addr>>4;
+  if(temp<0xa) temp = '0' + temp;
+  else temp = 'A' + temp-0xa;
+  str[i++] = temp;
+  temp = addr&0xf;
+  if(temp<0xa) temp = '0' + temp;
+  else temp = 'A' + temp-0xa;
+  str[i++] = temp;
+  str[i] = 0;
+  ezled_print(&ezled, str);
+}
+
 void main(void)
 {
   ezled_para_def* para;
@@ -136,6 +156,7 @@ void main(void)
   ezled_set_fontbuf(&ezled, fontbuff, 256);
   para = parameter_get();
   commands_init(para->addr);
+  print_module_addr(para->addr);
   /* Enable general interrupts */  
   enableInterrupts();
   while (1)

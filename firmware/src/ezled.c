@@ -308,8 +308,6 @@ void ezled_print(ezled_def* pezled, char *pstr){
  * @return 0 if succeeded, otherwise negative number
 */
 int8_t ezled_init(ezled_def* pezled, ezledif_def*phardware){
-  uint8_t i, temp;
-  char str[9];
   if(pezled == 0) return -1;
   if(phardware == 0) return -1;
   
@@ -329,22 +327,6 @@ int8_t ezled_init(ezled_def* pezled, ezledif_def*phardware){
   pezled->private.scroll_en = 0;
   pezled->private.scroll_pos = 0;
   pezled->private.contrast_sel = 0;
-  i=0;
-  str[i++] = 'A';
-  str[i++] = 'D';
-  if(pezled->ezledif->count > 4)
-    str[i++] = 'D';
-  str[i++] = '.';
-  temp = pezled->ezledif->address>>4;
-  if(temp<0xa) temp = '0' + temp;
-  else temp = 'A' + temp-0xa;
-  str[i++] = temp;
-  temp = pezled->ezledif->address&0xf;
-  if(temp<0xa) temp = '0' + temp;
-  else temp = 'A' + temp-0xa;
-  str[i++] = temp;
-  str[i] = 0;
-  ezled_print(pezled, str);
   ezled_set_blink(pezled, 0);
   return 0;
 }

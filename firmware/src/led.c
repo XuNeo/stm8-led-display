@@ -54,12 +54,12 @@ static void led_light_up(uint8_t position_set, uint8_t seg_set){
 #define LED_GPIOC_MSK (GPIO_PIN_5|GPIO_PIN_7|GPIO_PIN_6|GPIO_PIN_4)
   //the table. input index is LEDSEGA ~ LEDSEGDP
   const uint8_t table_seg2gpiod[] = {
-    0, 0, GPIO_PIN_4, GPIO_PIN_2, 
-    GPIO_PIN_1, 0, 0, GPIO_PIN_3,
+    0, 0, GPIO_PIN_3, GPIO_PIN_1, 
+    0, 0, GPIO_PIN_4, GPIO_PIN_2,
   };
   const uint8_t table_seg2gpioc[] = {
-    GPIO_PIN_5, GPIO_PIN_7, 0, 0,
-    0, GPIO_PIN_6, GPIO_PIN_4, 0,
+    GPIO_PIN_6, GPIO_PIN_5, 0, 0,
+    GPIO_PIN_7, GPIO_PIN_4, 0, 0,
   };
   uint8_t i, mask;
   uint8_t gpioc_set, gpiod_set;

@@ -96,6 +96,9 @@ void parameter_set(ezled_para_def *ppara){
   if(ppara->scroll_speed != _ezled_para.scroll_speed){
     eeprom_write((uint8_t*)&_ezled_para.scroll_speed, (uint8_t*)&ppara->scroll_speed, 1);
   }
+  if(ppara->addr != _ezled_para.addr){
+    eeprom_write((uint8_t*)&_ezled_para.addr, (uint8_t*)&ppara->addr, 1);
+  }
 }
 
 ezled_para_def* parameter_get(void){
